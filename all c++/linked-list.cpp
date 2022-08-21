@@ -13,6 +13,11 @@ public:
         Next = NULL;
     }
 };
+struct Test
+{
+    int position[1000];
+};
+
 void insertAtHead(Node *&head, int val);
 void insertAtTail(Node *&head, int val);
 void display(Node *n);
@@ -129,6 +134,24 @@ int searchByDuplicate(Node *&head, int key)
         cout << endl;
     }
 }
+Test searchByValueDuplicateReturn(Node *&head, int key)
+{
+    Node *temp = head;
+    Test T;
+    int k = 1;
+    int count = 1;
+    while (temp != NULL)
+    {
+        if (temp->value == key)
+        {
+            T.position[k] = count;
+        }
+        temp = temp->Next;
+        count++;
+    }
+    T.position[0] = k;
+    return T;
+}
 main()
 {
     Node *head = NULL;
@@ -161,24 +184,42 @@ main()
             cout << "Entered the value to search  ";
             int value;
             cin >> value;
-            searchByDuplicate(head, value);
+            // searchByDuplicate(head, value);
+            Test T;
+            T = searchByValueDuplicateReturn(head, value);
+            if (T.position[0] == 1)
+            {
+                cout << "The Search Value is not yet in the list!" << endl;
+            }
+            else
+            {
+                int size = T.position[0];
+                cout << "The vale is found at position";
+                for (int i = 1; i < size; i++)
+                {
+                    cout << T.position[i];
+                    if (i < size - 1)
+                        cout << ", ";
+                }
+                cout << endl;
+            }
+            cout << "Next Choice ";
+            cin >> choice;
         }
-        cout << "Next Choice ";
-        cin >> choice;
+
+        // char choice = 'Y';
+        // while (choice == 'Y')
+        // {
+        //     cout << "Enter the value:";
+        //     cin >> n;
+        //     insertAtTail(head, n);
+        //     cout << "do you want to Continue (Y/N)";
+        //     cin >> choice;
+        // }
+        display(head);
+        cout << endl;
+        cout << "length of linked list is " << countLength(head);
+
+        return 0;
     }
-
-    // char choice = 'Y';
-    // while (choice == 'Y')
-    // {
-    //     cout << "Enter the value:";
-    //     cin >> n;
-    //     insertAtTail(head, n);
-    //     cout << "do you want to Continue (Y/N)";
-    //     cin >> choice;
-    // }
-    display(head);
-    cout << endl;
-    cout << "length of linked list is " << countLength(head);
-
-    return 0;
 }
