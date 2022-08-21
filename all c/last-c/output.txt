@@ -1,0 +1,5 @@
+Name: tangil total=>23 roll=>5
+Name: hasan total=>33 roll=>6
+Name: tarek total=>77 roll=>8
+Name: nayeed total=>99 roll=>1
+Name: riyad total=>100 roll=>4

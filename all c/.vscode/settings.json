@@ -1,0 +1,19 @@
+{
+    "files.associations": {
+        "typeinfo": "c",
+        "*.tcc": "c",
+        "deque": "c",
+        "string": "c",
+        "unordered_map": "c",
+        "vector": "c",
+        "functional": "c",
+        "memory_resource": "c",
+        "algorithm": "c",
+        "random": "c",
+        "istream": "c",
+        "cmath": "c",
+        "tuple": "c",
+        "utility": "c",
+        "stdio.h": "c"
+    }
+}

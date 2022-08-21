@@ -1,0 +1,7 @@
+6
+riyad 44 4
+hasan 33 6
+tangil 23 5
+tarek 77 8
+nayeed 99 1
+riyad 56 4
