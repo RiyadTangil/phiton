@@ -1,92 +1,113 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Node
+class doublyNode
 {
 public:
     int value;
-    Node *Next;
+    doublyNode *next;
+    doublyNode *prev;
     // Constructor Creation
-    Node(int val)
+    doublyNode(int val)
     {
         value = val;
-        Next = NULL;
+        next = NULL;
+        prev = NULL;
     }
 };
+
 struct Test
 {
     int position[1000];
 };
 
-void insertAtHead(Node *&head, int val);
-void insertAtTail(Node *&head, int val);
-void display(Node *n);
-void insertAtPosition(Node *&head, int val, int pos);
-void insertAtHead(Node *&head, int val)
+void insertAtHead(doublyNode *&head, int val);
+void insertAtTail(doublyNode *&head, int val);
+void display(doublyNode *n);
+void insertAtPosition(doublyNode *&head, int val, int pos);
+void insertAtHead(doublyNode *&head, int val)
 {
-    Node *newNode = new Node(val);
-    newNode->Next = head;
-    Node *temp = head;
+    doublyNode *newNode = new doublyNode(val);
+    head->prev = newNode;
+    newNode->next = head;
+    doublyNode *temp = head;
     head = newNode;
 }
-int searchByUniqueValue(Node *&head, int val);
-void insertAtTail(Node *&head, int val)
+int searchByUniqueValue(doublyNode *&head, int val);
+void insertAtTail(doublyNode *&head, int val)
 {
-    Node *newNode = new Node(val);
+    doublyNode *newNode = new doublyNode(val);
+    // null|2|null address is 3000
     if (head == NULL)
     {
         head = newNode;
         return;
     }
-    Node *temp = head;
-    while (temp->Next != NULL)
+    doublyNode *temp = head;
+    while (temp->next != NULL)
     {
-        temp = temp->Next;
+        temp = temp->next;
     }
-    temp->Next = newNode;
+    temp->next = newNode;
+    newNode->prev = temp;
 }
 
-void display(Node *n)
+void display(doublyNode *n)
 {
     while (n != NULL)
     {
         cout << n->value;
-        if (n->Next != NULL)
+        if (n->next != NULL)
             cout << " ->";
-        n = n->Next;
+        n = n->next;
     }
 }
 
+void displayReverse(doublyNode *head)
+{
+    doublyNode *temp = head;
+    while (temp->next != NULL)
+    {
+        temp = temp->next;
+    }
+    while (temp != NULL)
+    {
+        cout << temp->value;
+        if (temp->prev != NULL)
+            cout << "--->";
+        temp = temp->prev;
+    }
+    cout << endl
+         << endl;
+}
 
-int countLength(Node *&head)
+int countLength(doublyNode *&head)
 {
     int count = 0;
-    Node *temp = head;
+    doublyNode *temp = head;
     while (temp != NULL)
     {
         count++;
-        temp = temp->Next;
+        temp = temp->next;
     }
     return count;
 }
-
-void insertAtPosition(Node *&head, int val, int pos)
+void insertAtPosition(doublyNode *&head, int val, int pos)
 {
     int i = 0;
-    Node *temp = head;
+    doublyNode *temp = head;
     while (i <= pos - 2)
     {
-        temp = temp->Next;
+        temp = temp->next;
         i++;
     }
-    Node *newNode = new Node(val);
-    newNode->Next = temp->Next;
-    temp->Next = newNode;
+    doublyNode *newNode = new doublyNode(val);
+    newNode->next = temp->next;
+    temp->next = newNode;
 }
-
-int searchByUniqueValue(Node *&head, int key)
+int searchByUniqueValue(doublyNode *&head, int key)
 {
-    Node *temp = head;
+    doublyNode *temp = head;
     int count = 1;
     if (temp == NULL)
     {
@@ -94,18 +115,18 @@ int searchByUniqueValue(Node *&head, int key)
     }
     while (temp->value != key)
     {
-        if (temp->Next == NULL)
+        if (temp->next == NULL)
         {
             return -1;
         }
-        temp = temp->Next;
+        temp = temp->next;
         count++;
     }
     return count;
 }
-int searchByDuplicate(Node *&head, int key)
+int searchByDuplicate(doublyNode *&head, int key)
 {
-    Node *temp = head;
+    doublyNode *temp = head;
     int size = 0;
     size = countLength(head);
     int position[size + 1], k = 1;
@@ -119,7 +140,7 @@ int searchByDuplicate(Node *&head, int key)
             k++;
             flag = 1;
         }
-        temp = temp->Next;
+        temp = temp->next;
         count++;
     }
     if (flag == 0)
@@ -137,9 +158,9 @@ int searchByDuplicate(Node *&head, int key)
         cout << endl;
     }
 }
-Test searchByValueDuplicateReturn(Node *&head, int key)
+Test searchByValueDuplicateReturn(doublyNode *&head, int key)
 {
-    Node *temp = head;
+    doublyNode *temp = head;
     Test T;
     int k = 1;
     int count = 1;
@@ -150,24 +171,24 @@ Test searchByValueDuplicateReturn(Node *&head, int key)
             T.position[k] = count;
             k++;
         }
-        temp = temp->Next;
+        temp = temp->next;
         count++;
     }
     T.position[0] = k;
     return T;
 }
-void searchByValueUnique(Node *&head, int searchValue, int value)
+void searchByValueUnique(doublyNode *&head, int searchValue, int value)
 {
     int position;
     position = searchByUniqueValue(head, searchValue);
     insertAtPosition(head, value, position + 1);
 }
-void deletionAtHead(Node *&head)
+void deletionAtHead(doublyNode *&head)
 {
-    Node *temp = head;
-    if (temp->Next != NULL)
+    doublyNode *temp = head;
+    if (temp->next != NULL)
     {
-        head = temp->Next;
+        head = temp->next;
         delete temp;
     }
     else
@@ -176,17 +197,17 @@ void deletionAtHead(Node *&head)
     }
 }
 
-void deletionAtTail(Node *&head)
+void deletionAtTail(doublyNode *&head)
 {
-    Node *temp = head;
-    if (temp->Next != NULL && temp->Next != NULL)
+    doublyNode *temp = head;
+    if (temp->next != NULL && temp->next != NULL)
     {
-        while (temp->Next->Next != NULL)
+        while (temp->next->next != NULL)
         {
-            temp = temp->Next;
+            temp = temp->next;
         }
-        Node *delNode = temp->Next;
-        temp->Next = NULL;
+        doublyNode *delNode = temp->next;
+        temp->next = NULL;
         delete delNode;
     }
     else
@@ -202,10 +223,9 @@ void deletionAtTail(Node *&head)
         }
     }
 }
-
-void deletionAtSpecifiedPosition(Node *&head, int position)
+void deletionAtSpecifiedPosition(doublyNode *&head, int position)
 {
-    Node *temp = head;
+    doublyNode *temp = head;
     if (position <= countLength(head))
     {
         if (position == 1)
@@ -217,11 +237,11 @@ void deletionAtSpecifiedPosition(Node *&head, int position)
             int i = 1;
             while (i < position - 1)
             {
-                temp = temp->Next;
+                temp = temp->next;
                 i++;
             }
-            Node *delNode = temp->Next;
-            temp->Next = delNode->Next;
+            doublyNode *delNode = temp->next;
+            temp->next = delNode->next;
             delete delNode;
         }
     }
@@ -231,8 +251,7 @@ void deletionAtSpecifiedPosition(Node *&head, int position)
         cout << "Position out of Bounds";
     }
 }
-
-void deletionByValueUnique(Node *&head, int value)
+void deletionByValueUnique(doublyNode *&head, int value)
 {
     int position;
     position = searchByUniqueValue(head, value);
@@ -243,40 +262,40 @@ void deletionByValueUnique(Node *&head, int value)
         deletionAtSpecifiedPosition(head, position);
     }
 }
-Node *reverseNonRecursive(Node *&head)
+doublyNode *reverseNonRecursive(doublyNode *&head)
 {
-    Node *prev = NULL;
-    Node *current = head;
+    doublyNode *prev = NULL;
+    doublyNode *current = head;
     if (head == NULL)
     {
         cout << "The Linked List is Empty!" << endl;
         return head;
     }
-    Node *next = head->Next;
+    doublyNode *newNext = head->next;
     while (true)
     {
-        current->Next = prev;
+        current->next = prev;
         prev = current;
-        current = next;
+        current = newNext;
         if (current == NULL)
             break;
-        next = next->Next;
+        newNext = newNext->next;
     }
     return prev;
 }
 
-Node *reverseRecursive(Node *&head)
+doublyNode *reverseRecursive(doublyNode *&head)
 {
     // base case,
-    if (head == NULL || head->Next == NULL)
+    if (head == NULL || head->next == NULL)
     {
         if (head == NULL)
             cout << "The Linked list is empty" << endl;
         return head;
     }
-    Node *newHead = reverseRecursive(head->Next);
-    head->Next->Next = head;
-    head->Next = NULL;
+    doublyNode *newHead = reverseRecursive(head->next);
+    head->next->next = head;
+    head->next = NULL;
     return newHead;
 
     // A,X,Y,Z
@@ -284,11 +303,73 @@ Node *reverseRecursive(Node *&head)
     // Z->Y->X->NULL return korlam Z ke
     // Z->Y->X->A->NULL return korlam Z ke
 }
+int findMid(doublyNode *&head)
+{
+    // Case -1:Head Empty
+    if (head == NULL)
+        return -1;
+    doublyNode *show = head;
+    doublyNode *fast = head;
+    while (fast != NULL && fast->next != NULL)
+    {
+        show = show->next;
+        fast = fast->next->next;
+    }
+    return show->value;
+}
+void makeCycle(doublyNode *&head, int pos)
+{
+    doublyNode *temp = head;
+    doublyNode *startNode;
+    int count = 1;
+    while (temp->next != NULL)
+    {
+        if (count == pos)
+            startNode = temp;
+        temp = temp->next;
+        count++;
+    }
+    temp->next = startNode;
+}
+bool detectCycle(doublyNode *&head)
+{
+    doublyNode *slow = head;
+    doublyNode *fast = head;
+    while (fast != NULL && fast->next != NULL)
+    {
+        slow = slow->next;
+        fast = fast->next->next;
+        if (slow->next == fast->next)
+            return true;
+    }
+    return false;
+}
 
+void removeCycle(doublyNode *&head)
+{
+    doublyNode *slow = head;
+    doublyNode *fast = head;
+    // Step 1; fast=slow
+    do
+    {
+        slow = slow->next;
+        fast = fast->next->next;
+    } while (slow != fast);
+    // step 2 Re Initiallization of fast
+    fast = head;
 
+    // setp 3: fast ->Next =slow ->Next
+    while (fast->next != slow->next)
+    {
+        slow = slow->next;
+        fast = fast->next;
+    }
+    // step 4
+    slow->next = NULL;
+}
 main()
 {
-    Node *head = NULL;
+    doublyNode *head = NULL;
     int n;
     cout << "Choice 1:Insertion at Head" << endl;
     int choice = 2;
@@ -302,7 +383,7 @@ main()
             insertAtHead(head, n);
             break;
         case 2:
-            cout << "Enter the Value for tail: ";
+            cout << "Enter the Value : ";
             cin >> n;
             insertAtTail(head, n);
             break;
@@ -386,12 +467,44 @@ main()
             // https://www.youtube.com/watch?v=bjtMCwy_LMA
             head = reverseRecursive(head);
             break;
+        case 13:
+
+            int mid;
+            mid = findMid(head);
+            if (mid)
+                cout << "The mid is " << mid << endl;
+            else
+                cout << "The Linked list is empty" << endl;
+            break;
+        case 14:
+            // https://www.youtube.com/watch?v=bjtMCwy_LMA
+            cout << "Enter your expect cycle position" << endl;
+            cin >> position;
+            makeCycle(head, position);
+            break;
+        case 15:
+            bool cycleStatus;
+            cycleStatus = detectCycle(head);
+            if (cycleStatus == true)
+                cout << "There is cycle in the list" << endl;
+            else
+                cout << "There is no cycle in the list" << endl;
+
+            break;
+        case 16:
+            cycleStatus = detectCycle(head);
+            if (cycleStatus == true)
+                removeCycle(head);
+            else
+                cout << "There is no cycle in the list" << endl;
+
+            break;
 
         default:
             break;
         }
 
-        cout << "Next Choice ";
+        cout << "next Choice ";
         cin >> choice;
     }
 
@@ -405,6 +518,8 @@ main()
     //     cin >> choice;
     // }
     display(head);
+    cout << endl;
+    displayReverse(head);
     cout << endl;
     cout << "length of linked list is " << countLength(head);
 

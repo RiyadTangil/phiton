@@ -1,92 +1,135 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Node
+class circularNode
 {
 public:
     int value;
-    Node *Next;
+    circularNode *next;
+    circularNode *prev;
     // Constructor Creation
-    Node(int val)
+    circularNode(int val)
     {
         value = val;
-        Next = NULL;
+        next = NULL;
+        prev = NULL;
     }
 };
+
 struct Test
 {
     int position[1000];
 };
 
-void insertAtHead(Node *&head, int val);
-void insertAtTail(Node *&head, int val);
-void display(Node *n);
-void insertAtPosition(Node *&head, int val, int pos);
-void insertAtHead(Node *&head, int val)
+void insertAtHead(circularNode *&head, int val);
+void insertAtTail(circularNode *&head, int val);
+void display(circularNode *n);
+void insertAtPosition(circularNode *&head, int val, int pos);
+void insertAtHead(circularNode *&head, int val)
 {
-    Node *newNode = new Node(val);
-    newNode->Next = head;
-    Node *temp = head;
-    head = newNode;
-}
-int searchByUniqueValue(Node *&head, int val);
-void insertAtTail(Node *&head, int val)
-{
-    Node *newNode = new Node(val);
+    // s1:new node creation
+    circularNode *newNode = new circularNode(val);
+    // s2 update of newnode->Next
+    newNode->next = head;
+    // s3 update of tail with new head->Next
     if (head == NULL)
     {
         head = newNode;
+        newNode->next = head;
         return;
     }
-    Node *temp = head;
-    while (temp->Next != NULL)
+    circularNode *temp = head;
+    while (temp->next != head)
     {
-        temp = temp->Next;
+        temp = temp->next;
     }
-    temp->Next = newNode;
+    temp->next = newNode;
+    // s3 update the head;
+    head = newNode;
+}
+int searchByUniqueValue(circularNode *&head, int val);
+void insertAtTail(circularNode *&head, int val)
+{
+    circularNode *newNode = new circularNode(val);
+    // null|2|null address is 3000
+    if (head == NULL)
+    {
+        head = newNode;
+        newNode->next = head;
+        return;
+    }
+    circularNode *temp = head;
+    while (temp->next != head)
+    {
+        temp = temp->next;
+    }
+    newNode->next = head;
+    temp->next = newNode;
 }
 
-void display(Node *n)
+void display(circularNode *head)
 {
-    while (n != NULL)
+    if (head == NULL)
     {
-        cout << n->value;
-        if (n->Next != NULL)
-            cout << " ->";
-        n = n->Next;
+        cout << "THe Linked list is Empty!" << endl;
+        return;
     }
+    circularNode *temp = head;
+    do
+    {
+        cout << temp->value;
+        temp = temp->next;
+        if (temp != head)
+            cout << "->";
+    } while (temp != head);
+    cout << endl;
 }
 
-
-int countLength(Node *&head)
+void displayReverse(circularNode *head)
 {
-    int count = 0;
-    Node *temp = head;
+    circularNode *temp = head;
+    while (temp->next != NULL)
+    {
+        temp = temp->next;
+    }
     while (temp != NULL)
     {
-        count++;
-        temp = temp->Next;
+        cout << temp->value;
+        if (temp->prev != NULL)
+            cout << "--->";
+        temp = temp->prev;
     }
+    cout << endl
+         << endl;
+}
+
+int countLength(circularNode *&head)
+{
+    int count = 0;
+    circularNode *temp = head;
+    do
+    {
+        temp = temp->next;
+        count++;
+    } while (temp != head);
     return count;
 }
-
-void insertAtPosition(Node *&head, int val, int pos)
+void insertAtPosition(circularNode *&head, int val, int pos)
 {
     int i = 0;
-    Node *temp = head;
+    circularNode *temp = head;
     while (i <= pos - 2)
     {
-        temp = temp->Next;
+        temp = temp->next;
         i++;
     }
-    Node *newNode = new Node(val);
-    newNode->Next = temp->Next;
-    temp->Next = newNode;
+    circularNode *newNode = new circularNode(val);
+    newNode->next = temp->next;
+    temp->next = newNode;
 }
-
-int searchByUniqueValue(Node *&head, int key)
+int searchByUniqueValue(circularNode *&head, int key)
 {
-    Node *temp = head;
+    circularNode *temp = head;
     int count = 1;
     if (temp == NULL)
     {
@@ -94,18 +137,18 @@ int searchByUniqueValue(Node *&head, int key)
     }
     while (temp->value != key)
     {
-        if (temp->Next == NULL)
+        if (temp->next == NULL)
         {
             return -1;
         }
-        temp = temp->Next;
+        temp = temp->next;
         count++;
     }
     return count;
 }
-int searchByDuplicate(Node *&head, int key)
+int searchByDuplicate(circularNode *&head, int key)
 {
-    Node *temp = head;
+    circularNode *temp = head;
     int size = 0;
     size = countLength(head);
     int position[size + 1], k = 1;
@@ -119,7 +162,7 @@ int searchByDuplicate(Node *&head, int key)
             k++;
             flag = 1;
         }
-        temp = temp->Next;
+        temp = temp->next;
         count++;
     }
     if (flag == 0)
@@ -137,9 +180,9 @@ int searchByDuplicate(Node *&head, int key)
         cout << endl;
     }
 }
-Test searchByValueDuplicateReturn(Node *&head, int key)
+Test searchByValueDuplicateReturn(circularNode *&head, int key)
 {
-    Node *temp = head;
+    circularNode *temp = head;
     Test T;
     int k = 1;
     int count = 1;
@@ -150,24 +193,24 @@ Test searchByValueDuplicateReturn(Node *&head, int key)
             T.position[k] = count;
             k++;
         }
-        temp = temp->Next;
+        temp = temp->next;
         count++;
     }
     T.position[0] = k;
     return T;
 }
-void searchByValueUnique(Node *&head, int searchValue, int value)
+void searchByValueUnique(circularNode *&head, int searchValue, int value)
 {
     int position;
     position = searchByUniqueValue(head, searchValue);
     insertAtPosition(head, value, position + 1);
 }
-void deletionAtHead(Node *&head)
+void deletionAtHead(circularNode *&head)
 {
-    Node *temp = head;
-    if (temp->Next != NULL)
+    circularNode *temp = head;
+    if (temp->next != NULL)
     {
-        head = temp->Next;
+        head = temp->next;
         delete temp;
     }
     else
@@ -176,17 +219,17 @@ void deletionAtHead(Node *&head)
     }
 }
 
-void deletionAtTail(Node *&head)
+void deletionAtTail(circularNode *&head)
 {
-    Node *temp = head;
-    if (temp->Next != NULL && temp->Next != NULL)
+    circularNode *temp = head;
+    if (temp->next != NULL && temp->next != NULL)
     {
-        while (temp->Next->Next != NULL)
+        while (temp->next->next != NULL)
         {
-            temp = temp->Next;
+            temp = temp->next;
         }
-        Node *delNode = temp->Next;
-        temp->Next = NULL;
+        circularNode *delNode = temp->next;
+        temp->next = NULL;
         delete delNode;
     }
     else
@@ -202,10 +245,9 @@ void deletionAtTail(Node *&head)
         }
     }
 }
-
-void deletionAtSpecifiedPosition(Node *&head, int position)
+void deletionAtSpecifiedPosition(circularNode *&head, int position)
 {
-    Node *temp = head;
+    circularNode *temp = head;
     if (position <= countLength(head))
     {
         if (position == 1)
@@ -217,11 +259,11 @@ void deletionAtSpecifiedPosition(Node *&head, int position)
             int i = 1;
             while (i < position - 1)
             {
-                temp = temp->Next;
+                temp = temp->next;
                 i++;
             }
-            Node *delNode = temp->Next;
-            temp->Next = delNode->Next;
+            circularNode *delNode = temp->next;
+            temp->next = delNode->next;
             delete delNode;
         }
     }
@@ -231,8 +273,7 @@ void deletionAtSpecifiedPosition(Node *&head, int position)
         cout << "Position out of Bounds";
     }
 }
-
-void deletionByValueUnique(Node *&head, int value)
+void deletionByValueUnique(circularNode *&head, int value)
 {
     int position;
     position = searchByUniqueValue(head, value);
@@ -243,40 +284,40 @@ void deletionByValueUnique(Node *&head, int value)
         deletionAtSpecifiedPosition(head, position);
     }
 }
-Node *reverseNonRecursive(Node *&head)
+circularNode *reverseNonRecursive(circularNode *&head)
 {
-    Node *prev = NULL;
-    Node *current = head;
+    circularNode *prev = NULL;
+    circularNode *current = head;
     if (head == NULL)
     {
         cout << "The Linked List is Empty!" << endl;
         return head;
     }
-    Node *next = head->Next;
+    circularNode *newNext = head->next;
     while (true)
     {
-        current->Next = prev;
+        current->next = prev;
         prev = current;
-        current = next;
+        current = newNext;
         if (current == NULL)
             break;
-        next = next->Next;
+        newNext = newNext->next;
     }
     return prev;
 }
 
-Node *reverseRecursive(Node *&head)
+circularNode *reverseRecursive(circularNode *&head)
 {
     // base case,
-    if (head == NULL || head->Next == NULL)
+    if (head == NULL || head->next == NULL)
     {
         if (head == NULL)
             cout << "The Linked list is empty" << endl;
         return head;
     }
-    Node *newHead = reverseRecursive(head->Next);
-    head->Next->Next = head;
-    head->Next = NULL;
+    circularNode *newHead = reverseRecursive(head->next);
+    head->next->next = head;
+    head->next = NULL;
     return newHead;
 
     // A,X,Y,Z
@@ -284,11 +325,73 @@ Node *reverseRecursive(Node *&head)
     // Z->Y->X->NULL return korlam Z ke
     // Z->Y->X->A->NULL return korlam Z ke
 }
+int findMid(circularNode *&head)
+{
+    // Case -1:Head Empty
+    if (head == NULL)
+        return -1;
+    circularNode *show = head;
+    circularNode *fast = head;
+    while (fast != NULL && fast->next != NULL)
+    {
+        show = show->next;
+        fast = fast->next->next;
+    }
+    return show->value;
+}
+void makeCycle(circularNode *&head, int pos)
+{
+    circularNode *temp = head;
+    circularNode *startNode;
+    int count = 1;
+    while (temp->next != NULL)
+    {
+        if (count == pos)
+            startNode = temp;
+        temp = temp->next;
+        count++;
+    }
+    temp->next = startNode;
+}
+bool detectCycle(circularNode *&head)
+{
+    circularNode *slow = head;
+    circularNode *fast = head;
+    while (fast != NULL && fast->next != NULL)
+    {
+        slow = slow->next;
+        fast = fast->next->next;
+        if (slow->next == fast->next)
+            return true;
+    }
+    return false;
+}
 
+void removeCycle(circularNode *&head)
+{
+    circularNode *slow = head;
+    circularNode *fast = head;
+    // Step 1; fast=slow
+    do
+    {
+        slow = slow->next;
+        fast = fast->next->next;
+    } while (slow != fast);
+    // step 2 Re Initiallization of fast
+    fast = head;
 
+    // setp 3: fast ->Next =slow ->Next
+    while (fast->next != slow->next)
+    {
+        slow = slow->next;
+        fast = fast->next;
+    }
+    // step 4
+    slow->next = NULL;
+}
 main()
 {
-    Node *head = NULL;
+    circularNode *head = NULL;
     int n;
     cout << "Choice 1:Insertion at Head" << endl;
     int choice = 2;
@@ -302,7 +405,7 @@ main()
             insertAtHead(head, n);
             break;
         case 2:
-            cout << "Enter the Value for tail: ";
+            cout << "Enter the Value : ";
             cin >> n;
             insertAtTail(head, n);
             break;
@@ -386,12 +489,44 @@ main()
             // https://www.youtube.com/watch?v=bjtMCwy_LMA
             head = reverseRecursive(head);
             break;
+        case 13:
+
+            int mid;
+            mid = findMid(head);
+            if (mid)
+                cout << "The mid is " << mid << endl;
+            else
+                cout << "The Linked list is empty" << endl;
+            break;
+        case 14:
+            // https://www.youtube.com/watch?v=bjtMCwy_LMA
+            cout << "Enter your expect cycle position" << endl;
+            cin >> position;
+            makeCycle(head, position);
+            break;
+        case 15:
+            bool cycleStatus;
+            cycleStatus = detectCycle(head);
+            if (cycleStatus == true)
+                cout << "There is cycle in the list" << endl;
+            else
+                cout << "There is no cycle in the list" << endl;
+
+            break;
+        case 16:
+            cycleStatus = detectCycle(head);
+            if (cycleStatus == true)
+                removeCycle(head);
+            else
+                cout << "There is no cycle in the list" << endl;
+
+            break;
 
         default:
             break;
         }
 
-        cout << "Next Choice ";
+        cout << "next Choice ";
         cin >> choice;
     }
 
@@ -405,6 +540,8 @@ main()
     //     cin >> choice;
     // }
     display(head);
+    cout << endl;
+    displayReverse(head);
     cout << endl;
     cout << "length of linked list is " << countLength(head);
 
