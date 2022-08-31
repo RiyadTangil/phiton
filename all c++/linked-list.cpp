@@ -39,6 +39,7 @@ void insertAtTail(Node *&head, int val)
         return;
     }
     Node *temp = head;
+    // cout << " temp=> " << temp << " temp->Next=> " << temp->Next << "head=>" << head << endl;
     while (temp->Next != NULL)
     {
         temp = temp->Next;
@@ -56,7 +57,6 @@ void display(Node *n)
         n = n->Next;
     }
 }
-
 
 int countLength(Node *&head)
 {
@@ -96,11 +96,13 @@ int searchByUniqueValue(Node *&head, int key)
     {
         if (temp->Next == NULL)
         {
+  
             return -1;
         }
         temp = temp->Next;
         count++;
     }
+ 
     return count;
 }
 int searchByDuplicate(Node *&head, int key)
@@ -284,7 +286,6 @@ Node *reverseRecursive(Node *&head)
     // Z->Y->X->NULL return korlam Z ke
     // Z->Y->X->A->NULL return korlam Z ke
 }
-
 
 main()
 {
