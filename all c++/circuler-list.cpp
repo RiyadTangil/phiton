@@ -353,6 +353,7 @@ void makeCycle(circularNode *&head, int pos)
     }
     temp->next = startNode;
 }
+
 bool detectCycle(circularNode *&head)
 {
     circularNode *slow = head;

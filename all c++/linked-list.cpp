@@ -105,6 +105,7 @@ int searchByUniqueValue(Node *&head, int key)
  
     return count;
 }
+
 int searchByDuplicate(Node *&head, int key)
 {
     Node *temp = head;
@@ -164,6 +165,7 @@ void searchByValueUnique(Node *&head, int searchValue, int value)
     position = searchByUniqueValue(head, searchValue);
     insertAtPosition(head, value, position + 1);
 }
+
 void deletionAtHead(Node *&head)
 {
     Node *temp = head;
